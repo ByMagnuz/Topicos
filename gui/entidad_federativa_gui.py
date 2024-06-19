@@ -8,11 +8,14 @@ class EntidadFederativaGUI(QtWidgets.QWidget):
 
     def initUI(self):
         self.setWindowTitle('Gestión de Entidades Federativas')
-        self.setGeometry(100, 100, 600, 400)
+        self.setGeometry(100, 100, 800, 600)
 
         self.layout = QtWidgets.QVBoxLayout(self)
 
         self.table = QtWidgets.QTableWidget(self)
+        self.table.setSelectionBehavior(QtWidgets.QTableView.SelectRows)
+        self.table.setSelectionMode(QtWidgets.QTableView.SingleSelection)
+        self.table.itemSelectionChanged.connect(self.fillForm)
         self.layout.addWidget(self.table)
 
         self.formLayout = QtWidgets.QFormLayout()
@@ -47,11 +50,17 @@ class EntidadFederativaGUI(QtWidgets.QWidget):
             return
         columns, data = data
         self.table.setColumnCount(len(columns))
-        self.table.setHorizontalHeaderLabels(columns)
         self.table.setRowCount(len(data))
+        self.table.setHorizontalHeaderLabels(columns)
         for row_num, row_data in enumerate(data):
             for col_num, col_data in enumerate(row_data):
                 self.table.setItem(row_num, col_num, QtWidgets.QTableWidgetItem(str(col_data)))
+        self.table.resizeColumnsToContents()
+
+    def fillForm(self):
+        selected_row = self.table.currentRow()
+        if selected_row != -1:
+            self.nombreInput.setText(self.table.item(selected_row, 1).text())
 
     def addEntidad(self):
         nombre = self.nombreInput.text()

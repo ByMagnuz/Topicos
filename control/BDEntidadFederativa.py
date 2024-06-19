@@ -1,3 +1,4 @@
+import re
 from conecxion import Conexion
 
 class BDEntidadFederativa:
@@ -14,6 +15,8 @@ class BDEntidadFederativa:
         return resp
 
     def guardar(self, nombre):
+        if not self.validTxt(nombre):
+            return False, "El nombre debe contener solo letras"
         objCon = Conexion()
         if not objCon.connection:
             return False, objCon.error_message
@@ -23,6 +26,8 @@ class BDEntidadFederativa:
         return success, error
 
     def actualizar(self, id, nombre):
+        if not self.validTxt(nombre):
+            return False, "El nombre debe contener solo letras"
         objCon = Conexion()
         if not objCon.connection:
             return False, objCon.error_message
@@ -39,3 +44,6 @@ class BDEntidadFederativa:
         success, error = objCon.exec_query(sql)
         objCon.close()
         return success, error
+
+    def validTxt(self, n):
+        return all(char.isalpha() or char.isspace() for char in n)
