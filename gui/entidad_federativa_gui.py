@@ -191,7 +191,7 @@ class EntidadFederativaGUI(QtWidgets.QWidget):
 
     def save(self):
         nombre = self.formNombre.text()
-        if nombre:
+        if nombre.strip():  # Validar que el campo nombre no esté vacío
             if self.editing_id:
                 mensaje = self.bd.actualizar(self.editing_id, nombre)
                 self.editing_id = None  # Resetear el ID de edición después de actualizar
