@@ -150,6 +150,8 @@ class EntidadFederativaGUI(QtWidgets.QWidget):
                 for col_index, col_data in enumerate(row_data):
                     item = QtWidgets.QTableWidgetItem(str(col_data))
                     item.setTextAlignment(QtCore.Qt.AlignCenter)  # Centrar texto
+                    #Nestor agrega la linea de abajo en las dem Municipio y Destinatario
+                    item.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)  # Hacer que la celda no sea editable
                     if col_data == 1:
                         item.setData(QtCore.Qt.DecorationRole, QtGui.QIcon(ICON_PATH))  # Establecer ícono del círculo verde
                         item.setText("")  # Vaciar el texto para mostrar solo el ícono
