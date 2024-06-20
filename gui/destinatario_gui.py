@@ -11,7 +11,7 @@ class DestinatarioGUI(QtWidgets.QWidget):
         self.setGeometry(100, 100, 800, 600)
 
         self.layout = QtWidgets.QVBoxLayout(self)
-
+#efesf
         self.table = QtWidgets.QTableWidget(self)
         self.table.setSelectionBehavior(QtWidgets.QTableView.SelectRows)
         self.table.setSelectionMode(QtWidgets.QTableView.SingleSelection)
