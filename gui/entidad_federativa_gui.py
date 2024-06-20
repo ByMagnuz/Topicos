@@ -38,12 +38,14 @@ class EntidadFederativaGUI(QtWidgets.QWidget):
     def insert(self):
         nombre, ok = QtWidgets.QInputDialog.getText(self, 'Nueva Entidad Federativa', 'Nombre:')
         if ok and nombre:
-            self.bd.guardar(nombre)
+            mensaje = self.bd.guardar(nombre)
+            QtWidgets.QMessageBox.information(self, "Inserción", mensaje)
             self.loadData()
 
     def delete(self):
         row = self.tblDatos.currentRow()
         if row != -1:
             id = int(self.tblDatos.item(row, 0).text())
-            self.bd.borrarLogico(id)
+            mensaje = self.bd.borrarLogico(id)
+            QtWidgets.QMessageBox.information(self, "Borrado", mensaje)
             self.loadData()

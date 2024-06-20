@@ -45,12 +45,14 @@ class DestinatarioGUI(QtWidgets.QWidget):
         id_municipio, ok = QtWidgets.QInputDialog.getInt(self, 'Nuevo Destinatario', 'ID Municipio:')
         if not ok:
             return
-        self.bd.guardar(nombre, direccion, id_municipio)
+        mensaje = self.bd.guardar(nombre, direccion, id_municipio)
+        QtWidgets.QMessageBox.information(self, "Inserción", mensaje)
         self.loadData()
 
     def delete(self):
         row = self.tblDatos.currentRow()
         if row != -1:
             id = int(self.tblDatos.item(row, 0).text())
-            self.bd.borrarLogico(id)
+            mensaje = self.bd.borrarLogico(id)
+            QtWidgets.QMessageBox.information(self, "Borrado", mensaje)
             self.loadData()

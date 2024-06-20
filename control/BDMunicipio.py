@@ -21,8 +21,9 @@ class BDMunicipio:
             sql = f"UPDATE Municipio SET activo = 0 WHERE id_municipio = {id}"
             resp = objCon.exec_query(r, sql)
             r.close()
-            return resp
-        return False
+            if resp:
+                return "Registro borrado correctamente."
+        return "Error al borrar el registro."
 
     def guardar(self, nombre, id_entidad):
         objCon = Conexion()
@@ -36,5 +37,7 @@ class BDMunicipio:
                 sql = f"INSERT INTO Municipio VALUES({n}, '{nombre}', {id_entidad}, 1);"
                 ok = objCon.exec_query(c, sql)
                 c.close()
-                return ok
-            return False
+                if ok:
+                    return "Registro insertado correctamente."
+            return "El registro ya existe."
+        return "Error al insertar el registro."
