@@ -4,108 +4,50 @@ from control.BDMunicipio import BDMunicipio
 class MunicipioGUI(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
-        self.initUI()
-
-    def initUI(self):
-        self.setWindowTitle('Gestión de Municipios')
-        self.setGeometry(100, 100, 800, 600)
-
-        self.layout = QtWidgets.QVBoxLayout(self)
-
-        self.table = QtWidgets.QTableWidget(self)
-        self.table.setSelectionBehavior(QtWidgets.QTableView.SelectRows)
-        self.table.setSelectionMode(QtWidgets.QTableView.SingleSelection)
-        self.table.itemSelectionChanged.connect(self.fillForm)
-        self.layout.addWidget(self.table)
-
-        self.formLayout = QtWidgets.QFormLayout()
-        self.layout.addLayout(self.formLayout)
-
-        self.nombreInput = QtWidgets.QLineEdit(self)
-        self.formLayout.addRow('Nombre del Municipio:', self.nombreInput)
-
-        self.idEntidadInput = QtWidgets.QLineEdit(self)
-        self.formLayout.addRow('ID de la Entidad Federativa:', self.idEntidadInput)
-
-        self.buttonLayout = QtWidgets.QHBoxLayout()
-        self.layout.addLayout(self.buttonLayout)
-
-        self.addButton = QtWidgets.QPushButton('Agregar', self)
-        self.addButton.clicked.connect(self.addMunicipio)
-        self.buttonLayout.addWidget(self.addButton)
-
-        self.updateButton = QtWidgets.QPushButton('Actualizar', self)
-        self.updateButton.clicked.connect(self.updateMunicipio)
-        self.buttonLayout.addWidget(self.updateButton)
-
-        self.deleteButton = QtWidgets.QPushButton('Eliminar', self)
-        self.deleteButton.clicked.connect(self.deleteMunicipio)
-        self.buttonLayout.addWidget(self.deleteButton)
-
+        self.bd = BDMunicipio()
+        self.setupUi()
         self.loadData()
 
+    def setupUi(self):
+        self.setWindowTitle("Gestión de Municipios")
+        self.resize(600, 400)
+        self.layout = QtWidgets.QVBoxLayout(self)
+
+        self.tblDatos = QtWidgets.QTableWidget(self)
+        self.layout.addWidget(self.tblDatos)
+
+        self.btnNuevo = QtWidgets.QPushButton("Nuevo", self)
+        self.btnBorrar = QtWidgets.QPushButton("Borrar", self)
+        self.layout.addWidget(self.btnNuevo)
+        self.layout.addWidget(self.btnBorrar)
+
+        self.btnNuevo.clicked.connect(self.insert)
+        self.btnBorrar.clicked.connect(self.delete)
+
     def loadData(self):
-        self.table.clear()
-        db = BDMunicipio()
-        data, error = db.obtenerDatos()
-        if error:
-            QtWidgets.QMessageBox.critical(self, "Error en la base de datos", str(error))  # Convertir a cadena de texto
-            return
-        columns, data = data
-        self.table.setColumnCount(len(columns))
-        self.table.setRowCount(len(data))
-        self.table.setHorizontalHeaderLabels(columns)
-        for row_num, row_data in enumerate(data):
-            for col_num, col_data in enumerate(row_data):
-                self.table.setItem(row_num, col_num, QtWidgets.QTableWidgetItem(str(col_data)))
-        self.table.resizeColumnsToContents()
+        data = self.bd.obtenerDatos()
+        if data:
+            headers, rows = data
+            self.tblDatos.setColumnCount(len(headers))
+            self.tblDatos.setRowCount(len(rows))
+            self.tblDatos.setHorizontalHeaderLabels(headers)
+            for row_index, row_data in enumerate(rows):
+                for col_index, col_data in enumerate(row_data):
+                    self.tblDatos.setItem(row_index, col_index, QtWidgets.QTableWidgetItem(str(col_data)))
 
-    def fillForm(self):
-        selected_row = self.table.currentRow()
-        if selected_row != -1:
-            self.nombreInput.setText(self.table.item(selected_row, 1).text())
-            self.idEntidadInput.setText(self.table.item(selected_row, 2).text())
-
-    def addMunicipio(self):
-        nombre = self.nombreInput.text()
-        id_entidad = self.idEntidadInput.text()
-        if not nombre or not id_entidad:
-            QtWidgets.QMessageBox.warning(self, "Advertencia", "Todos los campos deben estar llenos")
+    def insert(self):
+        nombre, ok = QtWidgets.QInputDialog.getText(self, 'Nuevo Municipio', 'Nombre:')
+        if not ok or not nombre:
             return
-        db = BDMunicipio()
-        success, error = db.guardar(nombre, id_entidad)
-        if error:
-            QtWidgets.QMessageBox.critical(self, "Error en la base de datos", str(error))  # Convertir a cadena de texto
-        else:
+        id_entidad, ok = QtWidgets.QInputDialog.getInt(self, 'Nuevo Municipio', 'ID Entidad:')
+        if not ok:
+            return
+        self.bd.guardar(nombre, id_entidad)
+        self.loadData()
+
+    def delete(self):
+        row = self.tblDatos.currentRow()
+        if row != -1:
+            id = int(self.tblDatos.item(row, 0).text())
+            self.bd.borrarLogico(id)
             self.loadData()
-            self.nombreInput.clear()
-            self.idEntidadInput.clear()
-
-    def updateMunicipio(self):
-        selected_row = self.table.currentRow()
-        if selected_row != -1:
-            id = int(self.table.item(selected_row, 0).text())
-            nombre = self.nombreInput.text()
-            id_entidad = self.idEntidadInput.text()
-            if not nombre or not id_entidad:
-                QtWidgets.QMessageBox.warning(self, "Advertencia", "Todos los campos deben estar llenos")
-                return
-            db = BDMunicipio()
-            success, error = db.actualizar(id, nombre, id_entidad)
-            if error:
-                QtWidgets.QMessageBox.critical(self, "Error en la base de datos", str(error))  # Convertir a cadena de texto
-            else:
-                self.loadData()
-                self.nombreInput.clear()
-                self.idEntidadInput.clear()
-
-    def deleteMunicipio(self):
-        selected_row = self.table.currentRow()
-        if selected_row != -1:
-            id = int(self.table.item(selected_row, 0).text())
-            db = BDMunicipio()
-            success, error = db.borrar(id)
-            if error:
-                QtWidgets.QMessageBox.critical(self, "Error en la base de datos", str(error))  # Convertir a cadena de texto
-            else:
-                self.loadData()

@@ -1,4 +1,3 @@
-import re
 from conecxion import Conexion
 
 class BDEntidadFederativa:
@@ -7,43 +6,35 @@ class BDEntidadFederativa:
 
     def obtenerDatos(self):
         objCon = Conexion()
-        if not objCon.connection:
-            return None, objCon.error_message
-        sql = "SELECT * FROM Entidad_Federativa WHERE activo = TRUE"
-        resp = objCon.query_all(sql)
-        objCon.close()
-        return resp
+        r = objCon.conexionMariaDB()
+        if r is not None:
+            sql = "SELECT * FROM Entidad_Federativa WHERE activo = 1"
+            resp = objCon.query_all(r, sql)
+            r.close()
+            return resp
+        return False
+
+    def borrarLogico(self, id):
+        objCon = Conexion()
+        r = objCon.conexionMariaDB()
+        if r is not None:
+            sql = f"UPDATE Entidad_Federativa SET activo = 0 WHERE id_entidad = {id}"
+            resp = objCon.exec_query(r, sql)
+            r.close()
+            return resp
+        return False
 
     def guardar(self, nombre):
-        if not self.validTxt(nombre):
-            return False, "El nombre debe contener solo letras"
         objCon = Conexion()
-        if not objCon.connection:
-            return False, objCon.error_message
-        sql = f"INSERT INTO Entidad_Federativa (nombre) VALUES ('{nombre}')"
-        success, error = objCon.exec_query(sql)
-        objCon.close()
-        return success, error
-
-    def actualizar(self, id, nombre):
-        if not self.validTxt(nombre):
-            return False, "El nombre debe contener solo letras"
-        objCon = Conexion()
-        if not objCon.connection:
-            return False, objCon.error_message
-        sql = f"UPDATE Entidad_Federativa SET nombre = '{nombre}' WHERE id_entidad = {id}"
-        success, error = objCon.exec_query(sql)
-        objCon.close()
-        return success, error
-
-    def borrar(self, id):
-        objCon = Conexion()
-        if not objCon.connection:
-            return False, objCon.error_message
-        sql = f"UPDATE Entidad_Federativa SET activo = FALSE WHERE id_entidad = {id}"
-        success, error = objCon.exec_query(sql)
-        objCon.close()
-        return success, error
-
-    def validTxt(self, n):
-        return all(char.isalpha() or char.isspace() for char in n)
+        c = objCon.conexionMariaDB()
+        if c is not None:
+            sql = f"SELECT id_entidad FROM Entidad_Federativa WHERE nombre = '{nombre}';"
+            existe = objCon.exist(c, sql)
+            if not existe:
+                sql = "SELECT max(id_entidad) FROM Entidad_Federativa;"
+                n = objCon.getNextID(c, sql)
+                sql = f"INSERT INTO Entidad_Federativa VALUES({n}, '{nombre}', 1);"
+                ok = objCon.exec_query(c, sql)
+                c.close()
+                return ok
+            return False
