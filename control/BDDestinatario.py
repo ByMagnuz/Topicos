@@ -8,16 +8,14 @@ class BDDestinatario:
         objCon = Conexion()
         if not objCon.connection:
             return None, objCon.error_message
-        sql = "SELECT * FROM Destinatario WHERE activo = TRUE"
-        data = objCon.query_all(sql)
-        if data:
-            columns = [desc[0] for desc in objCon.cursor.description]
-            objCon.close()
-            return (columns, data), None
-        else:
-            objCon.close()
-            return None, "No se pudieron obtener los datos"
-        
+        sql = "SELECT id_destinatario, nombre, direccion, id_municipio FROM Destinatario WHERE activo = TRUE"
+        resp = objCon.query_all(sql)
+        objCon.close()
+        if resp:
+            columns = ["ID", "Nombre", "Dirección", "ID Municipio"]
+            return (columns, resp), None
+        return None, "No se encontraron datos"
+
     def guardar(self, nombre, direccion, id_municipio):
         if not self.validTxt(nombre):
             return False, "El nombre debe contener solo letras"
