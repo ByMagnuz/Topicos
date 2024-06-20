@@ -46,7 +46,7 @@ class EntidadFederativaGUI(QtWidgets.QWidget):
         db = BDEntidadFederativa()
         data, error = db.obtenerDatos()
         if error:
-            QtWidgets.QMessageBox.critical(self, "Error en la base de datos", error)
+            QtWidgets.QMessageBox.critical(self, "Error en la base de datos", str(error))  # Convertir a cadena de texto
             return
         columns, data = data
         self.table.setColumnCount(len(columns))
@@ -70,7 +70,7 @@ class EntidadFederativaGUI(QtWidgets.QWidget):
         db = BDEntidadFederativa()
         success, error = db.guardar(nombre)
         if error:
-            QtWidgets.QMessageBox.critical(self, "Error en la base de datos", error)
+            QtWidgets.QMessageBox.critical(self, "Error en la base de datos", str(error))  # Convertir a cadena de texto
         else:
             self.loadData()
             self.nombreInput.clear()
@@ -86,7 +86,7 @@ class EntidadFederativaGUI(QtWidgets.QWidget):
             db = BDEntidadFederativa()
             success, error = db.actualizar(id, nombre)
             if error:
-                QtWidgets.QMessageBox.critical(self, "Error en la base de datos", error)
+                QtWidgets.QMessageBox.critical(self, "Error en la base de datos", str(error))  # Convertir a cadena de texto
             else:
                 self.loadData()
                 self.nombreInput.clear()
@@ -98,6 +98,6 @@ class EntidadFederativaGUI(QtWidgets.QWidget):
             db = BDEntidadFederativa()
             success, error = db.borrar(id)
             if error:
-                QtWidgets.QMessageBox.critical(self, "Error en la base de datos", error)
+                QtWidgets.QMessageBox.critical(self, "Error en la base de datos", str(error))  # Convertir a cadena de texto
             else:
                 self.loadData()

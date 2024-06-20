@@ -49,7 +49,7 @@ class MunicipioGUI(QtWidgets.QWidget):
         db = BDMunicipio()
         data, error = db.obtenerDatos()
         if error:
-            QtWidgets.QMessageBox.critical(self, "Error en la base de datos", error)
+            QtWidgets.QMessageBox.critical(self, "Error en la base de datos", str(error))  # Convertir a cadena de texto
             return
         columns, data = data
         self.table.setColumnCount(len(columns))
@@ -75,7 +75,7 @@ class MunicipioGUI(QtWidgets.QWidget):
         db = BDMunicipio()
         success, error = db.guardar(nombre, id_entidad)
         if error:
-            QtWidgets.QMessageBox.critical(self, "Error en la base de datos", error)
+            QtWidgets.QMessageBox.critical(self, "Error en la base de datos", str(error))  # Convertir a cadena de texto
         else:
             self.loadData()
             self.nombreInput.clear()
@@ -93,7 +93,7 @@ class MunicipioGUI(QtWidgets.QWidget):
             db = BDMunicipio()
             success, error = db.actualizar(id, nombre, id_entidad)
             if error:
-                QtWidgets.QMessageBox.critical(self, "Error en la base de datos", error)
+                QtWidgets.QMessageBox.critical(self, "Error en la base de datos", str(error))  # Convertir a cadena de texto
             else:
                 self.loadData()
                 self.nombreInput.clear()
@@ -106,6 +106,6 @@ class MunicipioGUI(QtWidgets.QWidget):
             db = BDMunicipio()
             success, error = db.borrar(id)
             if error:
-                QtWidgets.QMessageBox.critical(self, "Error en la base de datos", error)
+                QtWidgets.QMessageBox.critical(self, "Error en la base de datos", str(error))  # Convertir a cadena de texto
             else:
                 self.loadData()

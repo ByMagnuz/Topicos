@@ -52,7 +52,7 @@ class DestinatarioGUI(QtWidgets.QWidget):
         db = BDDestinatario()
         data, error = db.obtenerDatos()
         if error:
-            QtWidgets.QMessageBox.critical(self, "Error en la base de datos", error)
+            QtWidgets.QMessageBox.critical(self, "Error en la base de datos", str(error))  # Convertir a cadena de texto
             return
         columns, data = data
         self.table.setColumnCount(len(columns))
@@ -80,7 +80,7 @@ class DestinatarioGUI(QtWidgets.QWidget):
         db = BDDestinatario()
         success, error = db.guardar(nombre, direccion, id_municipio)
         if error:
-            QtWidgets.QMessageBox.critical(self, "Error en la base de datos", error)
+            QtWidgets.QMessageBox.critical(self, "Error en la base de datos", str(error))  # Convertir a cadena de texto
         else:
             self.loadData()
             self.nombreInput.clear()
@@ -100,7 +100,7 @@ class DestinatarioGUI(QtWidgets.QWidget):
             db = BDDestinatario()
             success, error = db.actualizar(id, nombre, direccion, id_municipio)
             if error:
-                QtWidgets.QMessageBox.critical(self, "Error en la base de datos", error)
+                QtWidgets.QMessageBox.critical(self, "Error en la base de datos", str(error))  # Convertir a cadena de texto
             else:
                 self.loadData()
                 self.nombreInput.clear()
@@ -114,6 +114,6 @@ class DestinatarioGUI(QtWidgets.QWidget):
             db = BDDestinatario()
             success, error = db.borrar(id)
             if error:
-                QtWidgets.QMessageBox.critical(self, "Error en la base de datos", error)
+                QtWidgets.QMessageBox.critical(self, "Error en la base de datos", str(error))  # Convertir a cadena de texto
             else:
                 self.loadData()
