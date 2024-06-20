@@ -10,7 +10,7 @@ class MainMenu(QtWidgets.QMainWindow):
 
     def initUI(self):
         self.setWindowTitle('Menú Principal')
-        self.setGeometry(100, 100, 800, 600)  
+        self.setGeometry(100, 100, 800, 600)  # Ajuste el tamaño de la ventana principal
 
         # Crear una barra de herramientas
         self.toolBar = QtWidgets.QToolBar(self)

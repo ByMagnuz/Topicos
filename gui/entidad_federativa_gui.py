@@ -49,3 +49,5 @@ class EntidadFederativaGUI(QtWidgets.QWidget):
             mensaje = self.bd.borrarLogico(id)
             QtWidgets.QMessageBox.information(self, "Borrado", mensaje)
             self.loadData()
+        else:
+            QtWidgets.QMessageBox.critical(self, "Error", "Seleccione un elemento para borrar.")
