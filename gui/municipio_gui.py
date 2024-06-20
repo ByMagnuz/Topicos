@@ -146,6 +146,7 @@ class MunicipioGUI(QtWidgets.QWidget):
                 for col_index, col_data in enumerate(row_data):
                     item = QtWidgets.QTableWidgetItem(str(col_data))
                     item.setTextAlignment(QtCore.Qt.AlignCenter)
+                    item.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)  # Hacer que la celda no sea editable
                     if col_data == 1:
                         item.setData(QtCore.Qt.DecorationRole, QtGui.QIcon(ICON_PATH))
                         item.setText("")
