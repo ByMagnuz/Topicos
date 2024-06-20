@@ -4,7 +4,7 @@ class Conexion:
     def __init__(self):
         try:
             self.connection = pyodbc.connect(
-                "DRIVER={MariaDB ODBC 3.1 Driver}; SERVER=localhost; UID=root; PWD=; DATABASE=ProyectoTop; PORT=3306"
+                "DRIVER={MariaDB ODBC 3.1 Driver}; SERVER=localhost; UID=root; PWD=; DATABASE=proyectotop; PORT=3306"
             )
         except pyodbc.Error as e:
             self.connection = None
