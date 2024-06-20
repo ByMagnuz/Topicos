@@ -57,11 +57,11 @@ class DestinatarioGUI(QtWidgets.QWidget):
         if data is None:
             QtWidgets.QMessageBox.critical(self, "Error en la base de datos", "Formato de datos incorrecto")
             return
-        columns, data = data
+        columns, rows = data
         self.table.setColumnCount(len(columns))
-        self.table.setRowCount(len(data))
+        self.table.setRowCount(len(rows))
         self.table.setHorizontalHeaderLabels(columns)
-        for row_num, row_data in enumerate(data):
+        for row_num, row_data in enumerate(rows):
             for col_num, col_data in enumerate(row_data):
                 self.table.setItem(row_num, col_num, QtWidgets.QTableWidgetItem(str(col_data)))
         self.table.resizeColumnsToContents()
