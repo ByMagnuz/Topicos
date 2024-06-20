@@ -13,6 +13,7 @@ class BDDestinatario:
         objCon.close()
         if resp:
             columns = ["ID", "Nombre", "Dirección", "ID Municipio"]
+            print("Datos obtenidos de la base de datos:", resp)  # Añadir impresión de depuración
             return (columns, resp), None
         return None, "No se encontraron datos"
 

@@ -55,6 +55,9 @@ class DestinatarioGUI(QtWidgets.QWidget):
         if error:
             QtWidgets.QMessageBox.critical(self, "Error en la base de datos", str(error))
             return
+        if data is None:
+            QtWidgets.QMessageBox.critical(self, "Error en la base de datos", "Formato de datos incorrecto")
+            return
         
         columns, data = data
         
