@@ -7,12 +7,32 @@ class BDDestinatario:
 
     def obtenerDatos(self):
         objCon = Conexion()
+        
+        # Verificar la conexión
         if not objCon.connection:
             return None, objCon.error_message
-        sql = "SELECT * FROM Destinatario WHERE activo = TRUE"
-        resp = objCon.query_all(sql)
-        objCon.close()
-        return resp
+        
+        sql = "SELECT * FROM destinatario WHERE activo = TRUE"
+        
+        try:
+            # Ejecutar la consulta SQL
+            resp = objCon.query_all(sql)
+            
+            # Verificar la respuesta
+            if not resp:
+                return None, "No se encontraron registros."
+            
+            # Obtener nombres de columnas y datos
+            columns = [desc[0] for desc in objCon.description]
+            data = resp
+            
+            # Cerrar la conexión
+            objCon.close()
+            
+            return (columns, data), None
+        except Exception as e:
+            objCon.close()
+            return None, str(e)
 
     def guardar(self, nombre, direccion, id_municipio):
         if not self.validTxt(nombre):

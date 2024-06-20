@@ -51,16 +51,38 @@ class DestinatarioGUI(QtWidgets.QWidget):
         self.table.clear()
         db = BDDestinatario()
         data, error = db.obtenerDatos()
+        
         if error:
-            QtWidgets.QMessageBox.critical(self, "Error en la base de datos", str(error))  # Convertir a cadena de texto
+            # Verifica si el error es una lista y conviértelo a una cadena de texto
+            if isinstance(error, list):
+                error_message = "\n".join(map(str, error))
+            else:
+                error_message = str(error)
+            
+            # Muestra el mensaje de error en un QMessageBox
+            QtWidgets.QMessageBox.critical(self, "Error en la base de datos", error_message)
             return
+        
+        # Asegúrate de que data tenga la estructura correcta
+        if not isinstance(data, tuple) or len(data) != 2:
+            QtWidgets.QMessageBox.critical(self, "Error en la base de datos", "Formato de datos incorrecto")
+            return
+        
         columns, data = data
+        
+        # Asegúrate de que columns y data sean listas
+        if not isinstance(columns, list) or not isinstance(data, list):
+            QtWidgets.QMessageBox.critical(self, "Error en la base de datos", "Formato de datos incorrecto")
+            return
+        
         self.table.setColumnCount(len(columns))
         self.table.setRowCount(len(data))
         self.table.setHorizontalHeaderLabels(columns)
+        
         for row_num, row_data in enumerate(data):
             for col_num, col_data in enumerate(row_data):
                 self.table.setItem(row_num, col_num, QtWidgets.QTableWidgetItem(str(col_data)))
+        
         self.table.resizeColumnsToContents()
 
     def fillForm(self):
