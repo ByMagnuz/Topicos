@@ -1,7 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from control.BDEntidadFederativa import BDEntidadFederativa
 
-# Ruta al ícono para el círculo verde
 ICON_PATH = 'green_circle.png'
 
 class EntidadFederativaGUI(QtWidgets.QWidget):
@@ -10,7 +9,8 @@ class EntidadFederativaGUI(QtWidgets.QWidget):
         self.bd = BDEntidadFederativa()
         self.setupUi()
         self.loadData()
-        self.formVisible = False  # Variable para controlar la visibilidad del formulario de edición
+        self.formVisible = False
+        self.editing_id = None  # Variable para almacenar el ID del registro en edición
 
     def setupUi(self):
         self.setWindowTitle("Gestión de Entidades Federativas")
@@ -167,6 +167,7 @@ class EntidadFederativaGUI(QtWidgets.QWidget):
         if not self.formVisible:
             self.formWidget.show()  # Mostrar el formulario debajo de la tabla
             self.formVisible = True
+            self.editing_id = None  # Resetear el ID de edición al abrir el formulario para un nuevo registro
         else:
             self.formWidget.hide()  # Ocultar el formulario
             self.formVisible = False
@@ -175,13 +176,13 @@ class EntidadFederativaGUI(QtWidgets.QWidget):
         row = self.tblDatos.currentRow()
         if row != -1:
             # Obtener el ID del registro seleccionado (suponiendo que está en la primera columna)
-            id = int(self.tblDatos.item(row, 0).text())
+            id_entidad = int(self.tblDatos.item(row, 0).text())
             # Obtener los datos del registro para editar
-            data = self.bd.obtenerDatosPorID(id)
+            data = self.bd.obtenerDatosPorID(id_entidad)
             if data:
                 # Mostrar los datos en el formulario de edición
-                nombre = data.get('nombre', '')
-                self.formNombre.setText(nombre)
+                self.formNombre.setText(data.get('nombre', ''))
+                self.editing_id = id_entidad  # Establecer el ID de edición
                 # Mostrar el formulario de edición
                 self.formWidget.show()
                 self.formVisible = True
@@ -189,11 +190,17 @@ class EntidadFederativaGUI(QtWidgets.QWidget):
     def save(self):
         nombre = self.formNombre.text()
         if nombre:
-            mensaje = self.bd.guardar(nombre)
-            QtWidgets.QMessageBox.information(self, "Inserción", mensaje)
+            if self.editing_id:
+                mensaje = self.bd.actualizar(self.editing_id, nombre)
+                self.editing_id = None  # Resetear el ID de edición después de actualizar
+            else:
+                mensaje = self.bd.guardar(nombre)
+            QtWidgets.QMessageBox.information(self, "Inserción/Actualización", mensaje)
             self.loadData()
             self.formNombre.clear()
             self.toggleForm()  # Ocultar el formulario después de guardar
+        else:
+            QtWidgets.QMessageBox.critical(self, "Error", "El campo nombre no puede estar vacío.")
 
     def delete(self):
         row = self.tblDatos.currentRow()
@@ -202,4 +209,5 @@ class EntidadFederativaGUI(QtWidgets.QWidget):
             mensaje = self.bd.borrarLogico(id)
             QtWidgets.QMessageBox.information(self, "Borrado", mensaje)
             self.loadData()
-
+        else:
+            QtWidgets.QMessageBox.critical(self, "Error", "Seleccione un elemento para borrar.")

@@ -14,6 +14,17 @@ class BDDestinatario:
             return resp
         return False
 
+    def obtenerDatosPorID(self, id):
+        objCon = Conexion()
+        r = objCon.conexionMariaDB()
+        if r is not None:
+            sql = f"SELECT * FROM Destinatario WHERE id_destinatario = {id}"
+            resp = objCon.query_all(r, sql)
+            r.close()
+            if resp and resp[1]:
+                return dict(zip(resp[0], resp[1][0]))
+        return None
+
     def borrarLogico(self, id):
         objCon = Conexion()
         r = objCon.conexionMariaDB()
@@ -41,3 +52,14 @@ class BDDestinatario:
                     return "Registro insertado correctamente."
             return "El registro ya existe."
         return "Error al insertar el registro."
+    
+    def actualizar(self, id_destinatario, nombre, direccion, id_municipio):
+        objCon = Conexion()
+        c = objCon.conexionMariaDB()
+        if c is not None:
+            sql = f"UPDATE Destinatario SET nombre='{nombre}', direccion='{direccion}', id_municipio={id_municipio} WHERE id_destinatario={id_destinatario}"
+            ok = objCon.exec_query(c, sql)
+            c.close()
+            if ok:
+                return "Registro actualizado correctamente."
+        return "Error al actualizar el registro."
