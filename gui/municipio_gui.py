@@ -219,3 +219,4 @@ class MunicipioGUI(QtWidgets.QWidget):
             self.loadData()
         else:
             QtWidgets.QMessageBox.critical(self, "Error", "Seleccione un elemento para borrar.")
+
