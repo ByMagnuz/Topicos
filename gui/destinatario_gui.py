@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from control.BDDestinatario import BDDestinatario
 
-ICON_PATH = 'green_circle.png'
+ICON_PATH = 'resources/png/16x16/green_circle.png'
 
 class DestinatarioGUI(QtWidgets.QWidget):
     def __init__(self):
@@ -195,6 +195,8 @@ class DestinatarioGUI(QtWidgets.QWidget):
                 # Mostrar el formulario de edición
                 self.formWidget.show()
                 self.formVisible = True
+        else:
+            QtWidgets.QMessageBox.warning(self, "Error", "Seleccione un registro para actualizar.")
 
     def save(self):
         nombre = self.formNombre.text()

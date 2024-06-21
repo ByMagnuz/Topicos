@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from control.BDMunicipio import BDMunicipio
 
-ICON_PATH = 'green_circle.png'
+ICON_PATH = 'resources/png/16x16/green_circle.png'
 
 class MunicipioGUI(QtWidgets.QWidget):
     def __init__(self):
@@ -191,6 +191,8 @@ class MunicipioGUI(QtWidgets.QWidget):
                 # Mostrar el formulario de edición
                 self.formWidget.show()
                 self.formVisible = True
+        else:
+            QtWidgets.QMessageBox.warning(self, "Error", "Seleccione un registro para actualizar.")
 
     def save(self):
         nombre = self.formNombre.text()
@@ -219,4 +221,3 @@ class MunicipioGUI(QtWidgets.QWidget):
             self.loadData()
         else:
             QtWidgets.QMessageBox.critical(self, "Error", "Seleccione un elemento para borrar.")
-

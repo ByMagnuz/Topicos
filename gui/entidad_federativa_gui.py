@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from control.BDEntidadFederativa import BDEntidadFederativa
 
-ICON_PATH = 'green_circle.png'
+ICON_PATH = 'resources/png/16x16/green_circle.png'
 
 class EntidadFederativaGUI(QtWidgets.QWidget):
     def __init__(self):
@@ -150,7 +150,7 @@ class EntidadFederativaGUI(QtWidgets.QWidget):
                 for col_index, col_data in enumerate(row_data):
                     item = QtWidgets.QTableWidgetItem(str(col_data))
                     item.setTextAlignment(QtCore.Qt.AlignCenter)  # Centrar texto
-                    #Nestor agrega la linea de abajo en las dem Municipio y Destinatario
+                    #Nestor agrega la linea de abajo en las de Municipio y Destinatario
                     item.setFlags(QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable)  # Hacer que la celda no sea editable
                     if col_data == 1:
                         item.setData(QtCore.Qt.DecorationRole, QtGui.QIcon(ICON_PATH))  # Establecer ícono del círculo verde
@@ -188,6 +188,8 @@ class EntidadFederativaGUI(QtWidgets.QWidget):
                 # Mostrar el formulario de edición
                 self.formWidget.show()
                 self.formVisible = True
+        else:
+            QtWidgets.QMessageBox.warning(self, "Error", "Seleccione un registro para actualizar.")
 
     def save(self):
         nombre = self.formNombre.text()
